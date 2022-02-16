@@ -6,15 +6,17 @@ import {
 } from 'react-native';
 
 import HomeNavigation from './stacks/StackNavigation';
+import Moment from 'moment';
 
-
-const contactsRN = () => (
+const contactsRN = () => { 
+    Moment.locale('pt-br')
+    return(
     <NavigationContainer>
         <View style={styles.container}>
             <HomeNavigation />
         </View>
     </NavigationContainer>
-)
+)}
 
 const styles = StyleSheet.create({
     container: {
