@@ -1,11 +1,11 @@
 import React from 'react'
 
-import HomeNavigation from '../../stacks/StackLogin';
+import ContatosNavigation from '../../stacks/StackContatos';
 
 const HomePage = () => {
 
     return (
-        <HomeNavigation/>
+        <ContatosNavigation/>
     )
 }
 

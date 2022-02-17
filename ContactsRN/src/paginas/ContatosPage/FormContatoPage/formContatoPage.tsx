@@ -14,7 +14,7 @@ import Moment from "moment"
 
 import { criarUsuario } from '../../../actions/usuario';
 
-const CadastroPage = ({ navigation }: { navigation: any }) => {
+const FormularioPage = ({ navigation }: { navigation: any }) => {
     Moment.locale('pt-br')
     const dispatch = useDispatch();
     const createUser = (usuario: any) => dispatch(criarUsuario(usuario))
@@ -183,4 +183,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default CadastroPage
+export default FormularioPage
