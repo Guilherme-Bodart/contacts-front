@@ -5,7 +5,7 @@ export const login = (usuario: any) => {
     return (dispatch: any) => {
         const { email, password } = usuario;
         const data = { usuario: {}, token: '' }
-        axios.post("http://10.0.2.2:3000/auth/authenticate", {
+        axios.post("https://contacts-rn.herokuapp.com/auth/authenticate", {
             email,
             password
         }).then(async (response) => {
@@ -33,7 +33,7 @@ export const logout = () => (
 
 export const criarUsuario = (usuario: any) => {
     return async (dispatch: any) => {
-        axios.post("http://10.0.2.2:3000/auth/register", {
+        axios.post("https://contacts-rn.herokuapp.com/auth/register", {
             usuario
         }).then(async (response) => {
             let user = { usuario: response.data.usuario, token: response.data.token }
@@ -52,7 +52,7 @@ export const atualizarUsuario = (usuario: any) => {
         
 
         contatos.push(usuario)
-        axios.put(`http://10.0.2.2:3000/user/${id}/contacts`, { contatos }, {
+        axios.put(`https://contacts-rn.herokuapp.com/user/${id}/contacts`, { contatos }, {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -71,7 +71,7 @@ export const getContatos = () => {
     return (dispatch: any, getState: any) => {
         let id = getState().usuarioReducer.usuario._id;
         let token = getState().usuarioReducer.token;
-        axios.get(`http://10.0.2.2:3000/user/${id}`, {
+        axios.get(`https://contacts-rn.herokuapp.com/user/${id}`, {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
