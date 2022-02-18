@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     View,
     Image,
@@ -6,21 +6,22 @@ import {
     Text
 } from 'react-native';
 import { useDispatch } from 'react-redux';
-
+import { useNavigation } from '@react-navigation/core';
 import { NativeBaseProvider, Box, Input, Button, IconButton } from 'native-base';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Moment from "moment"
 
-import { criarUsuario } from '../../../actions/usuario';
+import { atualizarUsuario } from '../../../actions/usuario';
 
-const FormularioPage = ({ navigation }: { navigation: any }) => {
+const FormularioPage = (props: any) => {
     Moment.locale('pt-br')
     const dispatch = useDispatch();
-    const createUser = (usuario: any) => dispatch(criarUsuario(usuario))
+    const updateUser = (usuario: any) => dispatch(atualizarUsuario(usuario))
 
+    const navigation = useNavigation();
+    const [id, onChangeId] = useState('');
     const [email, onChangeEmail] = useState('');
-    const [password, onChangePassword] = useState('');
     const [nome, onChangeNome] = useState('');
     const [sobrenome, onChangeSobreNome] = useState('');
     const [dataNascimento, setDataNascimento] = useState(new Date());
@@ -48,8 +49,8 @@ const FormularioPage = ({ navigation }: { navigation: any }) => {
 
     function setUser() {
         const usuario = {
+            _id: id,
             email: email,
-            password: password,
             nome: nome,
             sobrenome: sobrenome,
             dataNascimento: dataNascimento,
@@ -61,9 +62,33 @@ const FormularioPage = ({ navigation }: { navigation: any }) => {
             numero: numero,
             complemento: complemento
         }
-        createUser(usuario);
+        updateUser(usuario);
     }
 
+    const preencheContato = () => {
+        if (props.route.params) {
+            onChangeId(props.route.params._id);
+            onChangeEmail(props.route.params.email);
+            onChangeNome(props.route.params.nome);
+            onChangeSobreNome(props.route.params.sobrenome);
+            setDataNascimento(new Date(props.route.params.dataNascimento));
+            setDate(Moment(props.route.params.dataNascimento).format('DD-MM-YYYY'));
+            onChangeTelefone(props.route.params.telefone);
+            onChangeEstado(props.route.params.estado);
+            onChangeCidade(props.route.params.cidade);
+            onChangeBairro(props.route.params.bairro);
+            onChangeRua(props.route.params.rua);
+            onChangeNumero(props.route.params.numero);
+            onChangeComplemento(props.route.params.complemento);
+        }
+    }
+
+
+    useEffect(() => {
+        preencheContato()
+        return function cleanup() {
+          };
+    },[])
 
     return (
         <NativeBaseProvider>
@@ -91,11 +116,7 @@ const FormularioPage = ({ navigation }: { navigation: any }) => {
                 <Box flexDirection='row' mt={'3'}>
                     <Box _text={{ fontSize: "xs", color: 'coolGray.400' }}>
                         E-mail
-                        <Input variant="underlined" placeholder="E-mail" value={email} height="8" width="210" onChangeText={onChangeEmail} mr="5" />
-                    </Box>
-                    <Box _text={{ fontSize: "xs", color: 'coolGray.400' }}>
-                        Senha
-                        <Input variant="underlined" placeholder="Senha" value={password} height="8" width="110" onChangeText={onChangePassword} secureTextEntry />
+                        <Input width="340" marginRight={'0'} variant="underlined" placeholder="E-mail" value={email} height="8" onChangeText={onChangeEmail} mr="5" />
                     </Box>
                 </Box>
                 <Box flexDirection='row' mt={'3'}>
@@ -151,11 +172,12 @@ const FormularioPage = ({ navigation }: { navigation: any }) => {
                 </Box>
                 <Box mt="8" mb="1/6">
                     <Button variant="solid" colorScheme="teal" width="300" borderRadius="24" onPress={() => {
-                        setUser();
-                    }}>Criar Conta</Button>
-                    <Button mt="4" variant="solid" colorScheme="info" width="300" borderRadius="24" onPress={() => {
-                        navigation.navigate('Login');
-                    }}>Voltar</Button>
+                        setUser();navigation.navigate('Lista');
+                    }}>{props.route.params ? 'Editar Contato' : 'Criar Contato'}</Button>
+                    <Button mt="4" variant="solid" colorScheme="info" width="300" borderRadius="24"
+                        onPress={() => {
+                            navigation.navigate('Lista');
+                        }}>Voltar</Button>
                 </Box>
             </View>
         </NativeBaseProvider>

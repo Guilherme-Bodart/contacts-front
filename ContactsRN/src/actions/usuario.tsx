@@ -1,9 +1,8 @@
 import axios from 'axios';
-
-import { CREATE_USER, LOGIN_USER, LOGOUT_USER } from './types'
+import { CREATE_USER, LOGIN_USER, LOGOUT_USER, UPDATE_USER } from './types'
 
 export const login = (usuario: any) => {
-    return async (dispatch: any) => {
+    return (dispatch: any) => {
         const { email, password } = usuario;
         const data = { usuario: {}, token: '' }
         axios.post("http://10.0.2.2:3000/auth/authenticate", {
@@ -37,10 +36,51 @@ export const criarUsuario = (usuario: any) => {
         axios.post("http://10.0.2.2:3000/auth/register", {
             usuario
         }).then(async (response) => {
-            let user = {usuario: response.data.usuario, token:response.data.token}
+            let user = { usuario: response.data.usuario, token: response.data.token }
             await dispatch(armazenaInfoUsuario(user))
         }).catch((error) => {
             console.log('Error ao Criar conta');
+        })
+    }
+}
+
+export const atualizarUsuario = (usuario: any) => {
+    return (dispatch: any, getState: any) => {
+        let id = getState().usuarioReducer.usuario._id;
+        let token = getState().usuarioReducer.token;
+        let contatos = [];
+        
+
+        contatos.push(usuario)
+        axios.put(`http://10.0.2.2:3000/user/${id}/contacts`, { contatos }, {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
+            .then(async (response) => {
+                let user = { usuario: response.data.usuario, token: token }
+                await dispatch(armazenaInfoUsuario(user))
+
+            }).catch((error) => {
+                console.log('Erro ao Atualizar o contato');
+            })
+    }
+}
+
+export const getContatos = () => {
+    return (dispatch: any, getState: any) => {
+        let id = getState().usuarioReducer.usuario._id;
+        let token = getState().usuarioReducer.token;
+        axios.get(`http://10.0.2.2:3000/user/${id}`, {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        }).then(async (response) => {
+            let user = { usuario: response.data.usuario, token: token }
+            await dispatch(armazenaInfoUsuario(user))
+
+        }).catch((error) => {
+            console.log('Erro ao Atualizar o contato');
         })
     }
 }
